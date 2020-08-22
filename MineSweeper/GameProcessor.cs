@@ -17,6 +17,9 @@ namespace MineSweeper
         private MineButton[][] grid;
         private int _width, _height;
         private Label _counterLabel;
+
+        public EndGameDialog EndGameEvent;
+
         public int MineCount { get; private set; }
 
         public GameProcessor(int width, int height, ref Grid mainGrid, Label counterLabel)
@@ -39,7 +42,6 @@ namespace MineSweeper
             }
 
             GenerateMap(width, height, ref mainGrid);
-            
         }
 
         private void GenerateMap(int width, int height, ref Grid mainGrid)
@@ -89,7 +91,7 @@ namespace MineSweeper
                     for (var j=-1; j<=1; ++j)
                     {
                         if (yLoc + j < 0 || yLoc + j >= _height) continue;
-                        ++grid[xLoc][yLoc].Value;
+                        ++grid[xLoc+i][yLoc+j].Value;
                     }
                 }
 
@@ -97,12 +99,29 @@ namespace MineSweeper
             }
 
             SetRemainingMines();
+
+            //Test view
+            for(int i=0; i < _width && false; ++i)
+            {
+                for (int j =0; j < _height; ++j)
+                {
+                    var btn = grid[i][j];
+                    if (btn.IsBomb)
+                    {
+                        btn.Content = "B";
+                        //btn.Content = btn.Value.ToString();
+                    } else
+                    {
+                        btn.Content = btn.Value.ToString();
+                    }
+
+                }
+            }
         }
 
         public void Init()
         {
             var matrixSize = _width * _height;
-
 
         }
 
@@ -124,7 +143,8 @@ namespace MineSweeper
                 {
                     btn.SetState(MineButton.State.Number);
                 }
-                
+
+                ClearOpenCells(btn.X, btn.Y);
             }
 
             SetRemainingMines();
@@ -135,9 +155,40 @@ namespace MineSweeper
             SetRemainingMines();
         }
 
+        private void ClearOpenCells(int x, int y)
+        {
+            var queue = new List<MineButton>();
+            queue.Add(grid[x][y]);
+
+            ClearOpenRec(x - 1, y, queue);
+            ClearOpenRec(x + 1, y, queue);
+            ClearOpenRec(x, y - 1, queue);
+            ClearOpenRec(x, y + 1, queue);
+        }
+
+        private void ClearOpenRec(int x, int y, List<MineButton> queue)
+        {
+            if (x < 0 || x >= _width || y < 0 || y >= _height) return;
+            if (grid[x][y].IsBomb || grid[x][y].state != MineButton.State.Hidden) return;
+
+            var btn = grid[x][y];
+
+            if (btn.Value > 0)
+            {
+                btn.SetState(MineButton.State.Number);
+                return;
+            }
+            else btn.SetState(MineButton.State.Empty);
+
+            ClearOpenRec(x - 1, y, queue);
+            ClearOpenRec(x + 1, y, queue);
+            ClearOpenRec(x, y - 1, queue);
+            ClearOpenRec(x, y + 1, queue);
+
+        }
         private void EndGame(bool gameWon)
         {
-            
+            EndGameEvent();
         }
     
         private void SetRemainingMines()

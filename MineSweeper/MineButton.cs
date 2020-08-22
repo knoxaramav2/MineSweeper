@@ -40,6 +40,8 @@ namespace MineSweeper
             IsBomb = false;
             Content = " ";
             SetState(State.Hidden);
+
+            Value = 0;
         }
 
         public void SetState(State state)

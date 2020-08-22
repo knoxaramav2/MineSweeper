@@ -10,7 +10,6 @@ namespace MineSweeper
     public partial class MainWindow : Window
     {
         private GameProcessor _processor;
-        public EndGameDialog EndGame;
 
         public MainWindow()
         {
@@ -38,8 +37,13 @@ namespace MineSweeper
         private void NewGame(int width, int height)
         {
             _processor = new GameProcessor(width, height, ref MainGrid, MineCounterDisplay);
-            
+            _processor.EndGameEvent += EndGame;
             _processor.Init();
+        }
+
+        private void EndGame()
+        {
+            
         }
     }
 }
