@@ -82,6 +82,17 @@ namespace MineSweeper
                 }
 
                 grid[xLoc][yLoc].IsBomb = true;
+                //update numeric values
+                for(var i = -1; i <= 1; ++i)
+                {
+                    if (xLoc + i < 0 || xLoc + i >= _width) continue;
+                    for (var j=-1; j<=1; ++j)
+                    {
+                        if (yLoc + j < 0 || yLoc + j >= _height) continue;
+                        ++grid[xLoc][yLoc].Value;
+                    }
+                }
+
                 --mineCounter;
             }
 
@@ -106,7 +117,14 @@ namespace MineSweeper
                 EndGame(false);
             } else
             {
-                btn.SetState(MineButton.State.Empty);
+                if(btn.Value == 0)
+                {
+                    btn.SetState(MineButton.State.Empty);
+                } else
+                {
+                    btn.SetState(MineButton.State.Number);
+                }
+                
             }
 
             SetRemainingMines();

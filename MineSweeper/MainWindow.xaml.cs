@@ -38,12 +38,8 @@ namespace MineSweeper
         private void NewGame(int width, int height)
         {
             _processor = new GameProcessor(width, height, ref MainGrid, MineCounterDisplay);
+            
             _processor.Init();
-        }
-
-        public void EndGame()
-        {
-
         }
     }
 }
