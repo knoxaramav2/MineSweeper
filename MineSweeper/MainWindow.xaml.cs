@@ -2,8 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 
-
-
 namespace MineSweeper
 {
     /// <summary>
@@ -12,6 +10,8 @@ namespace MineSweeper
     public partial class MainWindow : Window
     {
         private GameProcessor _processor;
+        public EndGameDialog EndGame;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -37,8 +37,13 @@ namespace MineSweeper
 
         private void NewGame(int width, int height)
         {
-            _processor = new GameProcessor(width, height, ref MainGrid);
+            _processor = new GameProcessor(width, height, ref MainGrid, MineCounterDisplay);
             _processor.Init();
+        }
+
+        public void EndGame()
+        {
+
         }
     }
 }

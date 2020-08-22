@@ -5,8 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MineSweeper"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="800"
+        Title="MineSweeper" Height="800" Width="800"
         Loaded="Window_Loaded">
-    <Grid x:Name="MainGrid" ShowGridLines="True">
-    </Grid>
+    <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal">
+            <Label VerticalAlignment="Center">
+                Mines Remaining: 
+            </Label>
+            <Label x:Name="MineCounterDisplay">0</Label>
+        </StackPanel>
+        <Grid x:Name="MainGrid" ShowGridLines="True">
+        </Grid>
+        <StackPanel Height="100"/>
+    </StackPanel>
+    
 </Window>

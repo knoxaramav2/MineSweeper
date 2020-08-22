@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace MineSweeper
 {
@@ -12,6 +13,10 @@ namespace MineSweeper
     {
         public ushort X, Y;
         public LeftClick LeftClick;
+        public RightClick RightClick;
+        public int Value;
+
+        public static int FlagCounter = 0;
 
         public enum State
         {
@@ -25,7 +30,7 @@ namespace MineSweeper
         }
 
         public bool IsBomb;
-        public State state;
+        public State state { get; private set; }
 
         public MineButton(ushort x, ushort y)
         {
@@ -33,8 +38,42 @@ namespace MineSweeper
             Y = y;
 
             IsBomb = false;
-            state = State.Hidden;
             Content = " ";
+            SetState(State.Hidden);
+        }
+
+        public void SetState(State state)
+        {
+            this.state = state;
+            Foreground = Brushes.White;
+
+            switch (state)
+            {
+                case State.Empty:
+                    Background = Brushes.DarkGray;
+                    Content = " ";
+                    break;
+                case State.Hidden:
+                    Background = Brushes.Gray;
+                    Content = " ";
+                    break;
+                case State.Flagged:
+                    Background = Brushes.Yellow;
+                    Content = "!";
+                    break;
+                case State.Question:
+                    Background = Brushes.MediumPurple;
+                    Content = "?";
+                    break;
+                case State.Number:
+                    Background = Brushes.DarkGray;
+                    Content = $"{Value}";
+                    break;
+                case State.Exploded:
+                    Background = Brushes.DarkRed;
+                    Content = "X";
+                    break;
+            }
         }
 
         public void OnLeftClick(object sender, System.Windows.RoutedEventArgs e)
@@ -51,18 +90,23 @@ namespace MineSweeper
             {
                 case State.Hidden:
                     state = State.Flagged;
+                    ++FlagCounter;
                     Content = "!";
+                    Foreground = Brushes.Red;
                     break;
                 case State.Flagged:
                     state = State.Question;
+                    --FlagCounter;
                     Content = "?";
+                    Foreground = Brushes.Cyan;
                     break;
                 case State.Question:
                     state = State.Hidden;
                     Content = " ";
+                    Foreground = Brushes.White;
                     break;
             }
-            //RightClick(this);
+            RightClick(this);
         }
     }
 }
